@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  organizer
+  public
+}
+
+enum EventStatus {
+  Brouillon
+  Publie
+  Actif
+  Termine
+  Annule
+}
+
+enum VoteType {
+  simple
+  pack
+  both
+}
+
+enum TransactionStatus {
+  en_attente
+  confirme
+  echoue
+  rembourse
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  name        String
+  phone       String?
+  role        UserRole @default(public)
+  organizerId String?
+
+  transactions Transaction[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Event {
+  id           String   @id @default(cuid())
+  name         String
+  logoUrl      String?
+  posterUrl    String?
+  description  String?
+  country      String?
+  city         String?
+  location     String?
+  startDate    DateTime?
+  endDate      DateTime?
+  voteStartDate DateTime?
+  voteEndDate  DateTime?
+  status       EventStatus @default(Brouillon)
+  isAccompanied Boolean @default(false)
+  organizerId  String?
+  organizerName String?
+  hideRanking  Boolean @default(false)
+  votePriceCFA Float?
+
+  categories  Category[]
+  candidates  Candidate[]
+  votePacks   VotePack[]
+  transactions Transaction[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Category {
+  id            String   @id @default(cuid())
+  eventId       String
+  name          String
+  description   String?
+  imageUrl      String?
+  voteType      VoteType @default(simple)
+  maxCandidates Int?
+  status        String   @default("active")
+
+  event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  candidates Candidate[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Candidate {
+  id           String   @id @default(cuid())
+  categoryId   String
+  eventId      String
+  name         String
+  photoUrl     String?
+  gallery      String  @default("[]")
+  videoUrl     String?
+  bio          String?
+  presentation String?
+  community    String?
+  project      String?
+  socialLinks  Json?
+  votesCount   Int      @default(0)
+
+  category     Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  event        Event        @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model OtpCode {
+  id        String   @id @default(cuid())
+  phone     String
+  code      String
+  purpose   String   @default("vote") // vote, login, etc.
+  expiresAt DateTime
+  usedAt    DateTime?
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model VotePack {
+  id            String  @id @default(cuid())
+  eventId       String
+  name          String
+  votesCount    Int
+  priceCFA      Float
+  discountPercent Float?
+
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id               String   @id @default(cuid())
+  eventId          String
+  eventName        String?
+  candidateId      String
+  candidateName    String?
+  buyerName        String
+  buyerPhone       String
+  amountCFA        Float
+  votesCount       Int
+  packName         String?
+  paymentMethod    String
+  status           TransactionStatus @default(en_attente)
+  commissionCFA    Float    @default(0)
+  organizerShareCFA Float   @default(0)
+  userId           String?
+  otpVerified      Boolean  @default(false)
+
+  event     Event     @relation(fields: [eventId], references: [id])
+  candidate Candidate @relation(fields: [candidateId], references: [id])
+  user      User?     @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
