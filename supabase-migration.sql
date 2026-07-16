@@ -214,6 +214,9 @@ END $$;
 CREATE POLICY "Users can read own data" ON public.users
   FOR SELECT USING (auth.uid() = id);
 
+CREATE POLICY "Users can insert own data" ON public.users
+  FOR INSERT WITH CHECK (auth.uid() = id);
+
 CREATE POLICY "Events are publicly readable" ON public.events
   FOR SELECT USING (true);
 

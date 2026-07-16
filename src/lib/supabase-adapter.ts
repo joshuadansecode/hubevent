@@ -130,7 +130,21 @@ export class SupabaseAdapter implements BackendAdapter {
   async login(email: string, password: string) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw new Error(error.message);
-    const user = await this.getProfile(data.user.id);
+    let user = await this.getProfile(data.user.id);
+    if (!user) {
+      // Profile missing (trigger may have failed) — create it now
+      const { error: insertError } = await supabase
+        .from('users')
+        .insert({
+          id: data.user.id,
+          email: data.user.email!,
+          name: data.user.user_metadata?.name || email.split('@')[0],
+          role: data.user.user_metadata?.role || 'public',
+        });
+      if (!insertError) {
+        user = await this.getProfile(data.user.id);
+      }
+    }
     return { user: user!, token: data.session.access_token };
   }
 
@@ -142,12 +156,23 @@ export class SupabaseAdapter implements BackendAdapter {
         data: { name: data.name, role: 'organizer', phone: data.phone },
       },
     });
-    if (error) throw new Error(error.message);
+    if (error) {
+      // The database trigger might fail (500) but the auth user may still exist
+      // Try to sign in immediately — if successful, the profile was created
+      if (error.message?.includes('Database error') || error.status === 500) {
+        const signIn = await supabase.auth.signInWithPassword({
+          email: data.email, password: data.password,
+        });
+        if (signIn.error) throw new Error("Erreur lors de l'inscription. Assurez-vous d'avoir exécuté le script de correction dans Supabase SQL Editor.");
+        const user = await this.getProfile(signIn.data.user.id);
+        if (!user) throw new Error("Profil non trouvé après inscription.");
+        return { user, token: signIn.data.session.access_token };
+      }
+      throw new Error(error.message);
+    }
     if (!authData.user) throw new Error("Erreur lors de l'inscription");
-    // Wait a moment for the trigger to create the profile, or query until found
     const user = await this.getProfile(authData.user.id);
     if (!user) {
-      // Trigger might be async; wait briefly
       await new Promise(r => setTimeout(r, 500));
       const retry = await this.getProfile(authData.user.id);
       if (!retry) throw new Error("Impossible de récupérer le profil créé.");
