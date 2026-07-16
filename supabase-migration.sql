@@ -7,7 +7,7 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 -- ── Enum types ──────────────────────────────────────────────────────────
 
 DO $$ BEGIN
-  CREATE TYPE user_role AS ENUM ('admin', 'organizer', 'public');
+  CREATE TYPE user_role AS ENUM ('admin', 'organizer', 'observer', 'public');
 EXCEPTION WHEN duplicate_object THEN NULL;
 END $$;
 
@@ -209,11 +209,13 @@ DO $$ BEGIN
   DROP POLICY IF EXISTS "Authenticated users can update vote packs" ON public.vote_packs;
   DROP POLICY IF EXISTS "Authenticated users can delete vote packs" ON public.vote_packs;
   DROP POLICY IF EXISTS "Authenticated users can insert transactions" ON public.transactions;
+  DROP POLICY IF EXISTS "Users can insert own data" ON public.users;
 END $$;
 
 CREATE POLICY "Users can read own data" ON public.users
   FOR SELECT USING (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can insert own data" ON public.users;
 CREATE POLICY "Users can insert own data" ON public.users
   FOR INSERT WITH CHECK (auth.uid() = id);
 

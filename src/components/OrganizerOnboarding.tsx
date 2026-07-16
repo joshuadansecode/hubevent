@@ -170,6 +170,12 @@ export default function OrganizerOnboarding({
     setStep(4);
   };
 
+  // Skip onboarding entirely
+  const handleSkipAll = () => {
+    localStorage.setItem(`hubevent_onboarding_completed_${organizerId}`, 'true');
+    onClose();
+  };
+
   // Complete Onboarding
   const handleFinish = () => {
     if (createdEvent) {
@@ -192,6 +198,13 @@ export default function OrganizerOnboarding({
         {/* Glow effect */}
         <div className="absolute -top-12 -left-12 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Skip button */}
+        <button onClick={handleSkipAll}
+          className="absolute top-4 right-4 text-xs text-slate-500 hover:text-slate-300 transition-colors px-3 py-1 rounded-full border border-gray-800 hover:border-gray-600"
+        >
+          Passer →
+        </button>
 
         {/* Header step progress */}
         <div className="flex items-center justify-between gap-2 pb-6 border-b border-gray-800">

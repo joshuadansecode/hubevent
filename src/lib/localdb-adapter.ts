@@ -55,6 +55,13 @@ export class LocalDBAdapter implements BackendAdapter {
     };
   }
 
+  async setUserRole(userId: string, role: User['role']) {
+    if (this.currentUser.id === userId) {
+      this.currentUser = { ...this.currentUser, role };
+      this.notify(this.currentUser);
+    }
+  }
+
   private notify(user: User | null) {
     for (const listener of this.authListeners) listener(user);
   }

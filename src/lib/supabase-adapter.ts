@@ -192,6 +192,11 @@ export class SupabaseAdapter implements BackendAdapter {
     this.notify(null);
   }
 
+  async setUserRole(userId: string, role: User['role']) {
+    const { error } = await supabase.from('users').update({ role: role as any }).eq('id', userId);
+    if (error) throw new Error(error.message);
+  }
+
   async getSession() {
     const { data } = await supabase.auth.getSession();
     if (!data.session) return { user: null };

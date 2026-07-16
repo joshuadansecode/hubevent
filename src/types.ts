@@ -83,6 +83,6 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'organizer' | 'public';
+  role: 'admin' | 'organizer' | 'observer' | 'public';
   organizerId?: string; // Si le rôle est organisateur
 }

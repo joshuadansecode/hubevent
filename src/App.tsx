@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from 'react-router-dom';
-import { Sparkles, Globe, Shield, Users, Heart, Layers, Sun, Moon, LogOut, UserCircle, ArrowLeft } from 'lucide-react';
+import { Sparkles, Globe, Shield, Users, Heart, Layers, Sun, Moon, LogOut, UserCircle, ArrowLeft, Eye } from 'lucide-react';
 import { User, Event, Category, Candidate, VotePack, Transaction } from './types';
 import { useBackend } from './lib/backend';
 import { useTranslation } from './lib/i18n';
@@ -157,6 +157,11 @@ function AppLayout() {
                 <Users size={12} /> ORGANISATEUR
               </span>
             )}
+            {activeRole === 'observer' && (
+              <span className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400 rounded-lg text-xs font-semibold font-mono">
+                <Eye size={12} /> OBSERVATEUR
+              </span>
+            )}
             {activeRole === 'public' && !user && (
               <span className="hidden sm:flex items-center gap-1.5 px-3 py-1 bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-400 rounded-lg text-xs font-semibold font-mono">
                 <Globe size={12} /> PUBLIC
@@ -198,6 +203,15 @@ function AppLayout() {
             votePacks={votePacks}
             transactions={transactions}
             organizerId={user?.organizerId || ''}
+            onRefresh={handleRefresh}
+          />
+        )}
+        {activeRole === 'observer' && (
+          <PublicPortal
+            events={events}
+            categories={categories}
+            candidates={candidates}
+            votePacks={votePacks}
             onRefresh={handleRefresh}
           />
         )}

@@ -2,6 +2,7 @@
 -- Run this in Supabase SQL Editor (https://supabase.com/dashboard/project/dctafjjukvhqsailwqoo/sql/new)
 
 -- Add INSERT policy so authenticated users can create their own profile
+DROP POLICY IF EXISTS "Users can insert own data" ON public.users;
 CREATE POLICY "Users can insert own data" ON public.users
   FOR INSERT WITH CHECK (auth.uid() = id);
 

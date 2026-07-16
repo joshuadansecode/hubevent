@@ -69,6 +69,8 @@ export interface BackendAdapter {
   exportData(): Promise<string>;
   importData(json: string): Promise<boolean>;
   resetDatabase(): Promise<void>;
+
+  setUserRole?(userId: string, role: User['role']): Promise<void>;
 }
 
 // ── Provider ──────────────────────────────────────────────────────────────
@@ -81,6 +83,7 @@ interface BackendContextType {
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   setDemoUser: (user: User) => void;
+  setUserRole: (role: User['role']) => Promise<void>;
 }
 
 const BackendContext = createContext<BackendContextType | null>(null);
@@ -152,6 +155,12 @@ export function BackendProvider({ children }: { children: ReactNode }) {
     setBackend(localRef.current!);
   };
 
+  const setUserRole = async (role: User['role']) => {
+    if (!user) return;
+    await backend?.setUserRole?.(user.id, role);
+    setUser({ ...user, role });
+  };
+
   if (!backend) {
     return (
       <div className="min-h-screen bg-[#0d0f17] flex flex-col items-center justify-center gap-4">
@@ -162,7 +171,7 @@ export function BackendProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <BackendContext.Provider value={{ backend, user, loading, login, register, logout, setDemoUser }}>
+    <BackendContext.Provider value={{ backend, user, loading, login, register, logout, setDemoUser, setUserRole }}>
       {children}
     </BackendContext.Provider>
   );
