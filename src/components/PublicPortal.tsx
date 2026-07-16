@@ -310,7 +310,7 @@ export default function PublicPortal({
       <LandingFeatures />
 
       {/* LANDING PAGE - LIST EVENTS */}
-      {!selectedEventId && (
+      {!selectedEventId && (<>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
@@ -375,7 +375,7 @@ export default function PublicPortal({
         <TrustedLogos events={events} />
         <BlogSection />
         <CoachingCTA />
-      )}
+        </>)}
 
       {/* EVENT DETAILED PAGE */}
       {selectedEventId && activeEvent && !selectedCandidateId && (
