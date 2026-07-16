@@ -122,6 +122,19 @@ export class SupabaseAdapter implements BackendAdapter {
     return toUser(data);
   }
 
+  private async createProfile(authUser: any, data?: RegisterData): Promise<User | null> {
+    const { error: insertError } = await supabase
+      .from('users')
+      .insert({
+        id: authUser.id,
+        email: authUser.email!,
+        name: data?.name || authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Utilisateur',
+        role: (data?.role || authUser.user_metadata?.role || 'public') as any,
+      });
+    if (insertError) return null;
+    return this.getProfile(authUser.id);
+  }
+
   private notify(user: User | null) {
     for (const listener of this.authListeners) listener(user);
   }
@@ -131,22 +144,14 @@ export class SupabaseAdapter implements BackendAdapter {
   async login(email: string, password: string) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw new Error(error.message);
-    let user = await this.getProfile(data.user.id);
+    const user = await this.getProfile(data.user.id) ||
+      await this.createProfile(data.user);
     if (!user) {
-      // Profile missing (trigger may have failed) — create it now
-      const { error: insertError } = await supabase
-        .from('users')
-        .insert({
-          id: data.user.id,
-          email: data.user.email!,
-          name: data.user.user_metadata?.name || email.split('@')[0],
-          role: data.user.user_metadata?.role || 'public',
-        });
-      if (!insertError) {
-        user = await this.getProfile(data.user.id);
-      }
+      throw new Error(
+        "Profil introuvable. Exécutez d'abord le script de correction (supabase-fix-trigger.sql) dans Supabase SQL Editor.",
+      );
     }
-    return { user: user!, token: data.session.access_token };
+    return { user, token: data.session.access_token };
   }
 
   async register(data: RegisterData) {
@@ -158,27 +163,26 @@ export class SupabaseAdapter implements BackendAdapter {
       },
     });
     if (error) {
-      // The database trigger might fail (500) but the auth user may still exist
-      // Try to sign in immediately — if successful, the profile was created
       if (error.message?.includes('Database error') || error.status === 500) {
         const signIn = await supabase.auth.signInWithPassword({
           email: data.email, password: data.password,
         });
-        if (signIn.error) throw new Error("Erreur lors de l'inscription. Assurez-vous d'avoir exécuté le script de correction dans Supabase SQL Editor.");
-        const user = await this.getProfile(signIn.data.user.id);
-        if (!user) throw new Error("Profil non trouvé après inscription.");
+        if (signIn.error) {
+          throw new Error(
+            "L'inscription a échoué. Exécutez d'abord le script de correction dans Supabase SQL Editor (supabase-fix-trigger.sql), puis réessayez.",
+          );
+        }
+        const user = await this.getProfile(signIn.data.user.id) ||
+          await this.createProfile(signIn.data.user, data);
+        if (!user) throw new Error("Impossible de créer le profil.");
         return { user, token: signIn.data.session.access_token };
       }
       throw new Error(error.message);
     }
     if (!authData.user) throw new Error("Erreur lors de l'inscription");
-    const user = await this.getProfile(authData.user.id);
-    if (!user) {
-      await new Promise(r => setTimeout(r, 500));
-      const retry = await this.getProfile(authData.user.id);
-      if (!retry) throw new Error("Impossible de récupérer le profil créé.");
-      return { user: retry, token: authData.session?.access_token || '' };
-    }
+    const user = await this.getProfile(authData.user.id) ||
+      await this.createProfile(authData.user, data);
+    if (!user) throw new Error("Impossible de récupérer le profil créé.");
     return { user, token: authData.session?.access_token || '' };
   }
 
