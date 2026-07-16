@@ -113,12 +113,13 @@ export class SupabaseAdapter implements BackendAdapter {
   // ── Auth helpers ───────────────────────────────────────────────────
 
   private async getProfile(authUserId: string): Promise<User | null> {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('users')
       .select('*')
       .eq('id', authUserId)
-      .single();
-    return data ? toUser(data) : null;
+      .maybeSingle();
+    if (error || !data) return null;
+    return toUser(data);
   }
 
   private notify(user: User | null) {
