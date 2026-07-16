@@ -10,6 +10,9 @@ import { Event, Category, Candidate, VotePack, Transaction } from '../types';
 import { useBackend } from '../lib/backend';
 import EventCountdown from './EventCountdown';
 import LandingFeatures from './LandingFeatures';
+import TrustedLogos from './TrustedLogos';
+import BlogSection from './BlogSection';
+import CoachingCTA from './CoachingCTA';
 import WhatsAppButton from './WhatsAppButton';
 
 interface PublicPortalProps {
@@ -368,6 +371,10 @@ export default function PublicPortal({
             )}
           </div>
         </div>
+
+        <TrustedLogos events={events} />
+        <BlogSection />
+        <CoachingCTA />
       )}
 
       {/* EVENT DETAILED PAGE */}
