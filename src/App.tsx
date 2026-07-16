@@ -33,6 +33,15 @@ function AppLayout() {
   const navigate = useNavigate();
   const { lang, setLang } = useTranslation();
 
+  useEffect(() => {
+    const redirect = sessionStorage.getItem('redirect');
+    if (redirect) {
+      sessionStorage.removeItem('redirect');
+      try { navigate(new URL(redirect).pathname, { replace: true }); }
+      catch { navigate(redirect, { replace: true }); }
+    }
+  }, [navigate]);
+
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('hub_theme');
     if (saved === 'dark' || saved === 'light') return saved;
