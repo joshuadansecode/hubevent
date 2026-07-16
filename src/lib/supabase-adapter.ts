@@ -129,7 +129,7 @@ export class SupabaseAdapter implements BackendAdapter {
         id: authUser.id,
         email: authUser.email!,
         name: data?.name || authUser.user_metadata?.name || authUser.email?.split('@')[0] || 'Utilisateur',
-        role: (data?.role || authUser.user_metadata?.role || 'public') as any,
+        role: authUser.user_metadata?.role || 'public',
       });
     if (insertError) return null;
     return this.getProfile(authUser.id);

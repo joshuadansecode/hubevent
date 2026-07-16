@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { UserCheck, Headphones, ArrowRight, CheckCircle, Mail, Phone, MessageSquare, Send, Eye, X } from 'lucide-react';
+import { UserCheck, Headphones, ArrowRight, CheckCircle, Mail, Phone, MessageSquare, Send, Eye, X, Upload, Image } from 'lucide-react';
 import { useBackend } from '../lib/backend';
 
 interface OrganizerTypeChoiceProps {
@@ -13,8 +13,18 @@ export default function OrganizerTypeChoice({ user, onComplete, onClose }: Organ
   const { backend } = useBackend();
   const [step, setStep] = useState<'choice' | 'accompanied-form' | 'submitted'>('choice');
   const [form, setForm] = useState({ phone: '', eventName: '', message: '' });
+  const [posterPreview, setPosterPreview] = useState<string | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const posterRef = useRef<HTMLInputElement>(null);
+  const logoRef = useRef<HTMLInputElement>(null);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+
+  const handleFile = (file: File, setter: (v: string) => void) => {
+    const reader = new FileReader();
+    reader.onload = () => setter(reader.result as string);
+    reader.readAsDataURL(file);
+  };
 
   const handleSelfManage = () => onComplete('organizer');
 
@@ -172,6 +182,36 @@ export default function OrganizerTypeChoice({ user, onComplete, onClose }: Organ
                   <input type="text" value={form.eventName} onChange={e => setForm({ ...form, eventName: e.target.value })}
                     placeholder="Ex: Miss Bénin 2026"
                     className="w-full bg-[#0f111a] border border-gray-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-purple-600 placeholder:text-slate-600" />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1">Affiche de l'événement</label>
+                  <div onClick={() => posterRef.current?.click()}
+                    className="relative w-full h-32 bg-[#0f111a] border border-dashed border-gray-800 hover:border-purple-600/50 rounded-xl flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all overflow-hidden"
+                  >
+                    {posterPreview ? (
+                      <img src={posterPreview} alt="Aperçu" className="absolute inset-0 w-full h-full object-cover" />
+                    ) : (
+                      <><Upload size={20} className="text-slate-500" /><span className="text-[10px] text-slate-500">Ajouter une affiche</span></>
+                    )}
+                  </div>
+                  <input ref={posterRef} type="file" accept="image/*" className="hidden"
+                    onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f, setPosterPreview); }} />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-medium text-slate-400 mb-1">Logo de l'événement</label>
+                  <div onClick={() => logoRef.current?.click()}
+                    className="relative w-24 h-24 bg-[#0f111a] border border-dashed border-gray-800 hover:border-purple-600/50 rounded-xl flex flex-col items-center justify-center gap-1.5 cursor-pointer transition-all overflow-hidden"
+                  >
+                    {logoPreview ? (
+                      <img src={logoPreview} alt="Logo" className="absolute inset-0 w-full h-full object-contain p-2" />
+                    ) : (
+                      <><Image size={16} className="text-slate-500" /><span className="text-[8px] text-slate-500">Logo</span></>
+                    )}
+                  </div>
+                  <input ref={logoRef} type="file" accept="image/*" className="hidden"
+                    onChange={e => { const f = e.target.files?.[0]; if (f) handleFile(f, setLogoPreview); }} />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-400 mb-1">Message (optionnel)</label>
