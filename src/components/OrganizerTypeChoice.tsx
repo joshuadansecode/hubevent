@@ -91,10 +91,10 @@ export default function OrganizerTypeChoice({ user, onComplete, onClose }: Organ
                     </h3>
                     <p className="text-xs text-slate-400 leading-relaxed">
                       Vous créez et gérez vos événements, catégories et candidats en toute autonomie. 
-                      HubEvent prend 7% de commission sur chaque vote. Idéal si vous avez déjà une équipe.
+                      HubEvent prend 10% de commission sur chaque vote. Idéal si vous avez déjà une équipe.
                     </p>
                     <ul className="pt-2 space-y-1">
-                      {['Création illimitée d\'événements', 'Tableau de bord complet', 'Paiements Mobile Money intégrés', 'Rapports PDF et export CSV', 'Commission 7% seulement'].map((item) => (
+                      {['Création illimitée d\'événements', 'Tableau de bord complet', 'Paiements Mobile Money intégrés', 'Rapports PDF et export CSV', 'Commission 10% seulement'].map((item) => (
                         <li key={item} className="flex items-center gap-1.5 text-xs text-slate-400">
                           <CheckCircle size={12} className="text-green-500 shrink-0" /> {item}
                         </li>

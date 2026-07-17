@@ -154,7 +154,7 @@ export default function OrganizerDashboard({
   // Stats
   const totalVotes = eventTransactions.reduce((acc, tx) => acc + tx.votesCount, 0);
   const rawRevenues = eventTransactions.reduce((acc, tx) => acc + tx.amountCFA, 0);
-  const hubCommission = Math.round(rawRevenues * 0.07);
+  const hubCommission = Math.round(rawRevenues * 0.1);
   const organizerRevenues = rawRevenues - hubCommission;
   const mockVisitors = Math.round(totalVotes * 3.4 + 120); // Dynamic mock visitors
 
@@ -255,7 +255,7 @@ export default function OrganizerDashboard({
       doc.setTextColor(71, 85, 105);
       doc.text(`Organisateur ID : ${selectedEvent.organizerId || 'Non spécifié'}`, 19, y + 12);
       doc.text(`Statut actuel du scrutin : ${selectedEvent.status === 'Actif' ? 'OUVERT (EN COURS)' : 'CLÔTURÉ'}`, 19, y + 17);
-      doc.text(`Frais de commission standard appliqués : 7.0% (Réseau HubEvent)`, 19, y + 22);
+      doc.text(`Frais de commission standard appliqués : 10.0% (Réseau HubEvent)`, 19, y + 22);
 
       y += 33;
 
@@ -379,7 +379,7 @@ export default function OrganizerDashboard({
       doc.text('Pack / Volume', 60, y + 5.5);
       doc.text('Candidat bénéficiaire', 95, y + 5.5);
       doc.text('Montant Brut', 145, y + 5.5, { align: 'right' });
-      doc.text('Frais (7%)', 165, y + 5.5, { align: 'right' });
+      doc.text('Frais (10%)', 165, y + 5.5, { align: 'right' });
       doc.text('Date de transaction', 191, y + 5.5, { align: 'right' });
 
       y += 8;
@@ -842,9 +842,9 @@ export default function OrganizerDashboard({
         </div>
 
         <div className="bg-[#1a1d29] border border-amber-900/20 p-4 sm:p-5 rounded-xl hover:border-amber-900/30 transition-all bg-gradient-to-br from-[#1a1d29] to-amber-950/10">
-          <p className="text-[10px] text-amber-500 font-bold uppercase tracking-wider font-mono">Revenu Net (Après 7%)</p>
+          <p className="text-[10px] text-amber-500 font-bold uppercase tracking-wider font-mono">Revenu Net (Après 10%)</p>
           <p className="text-xl sm:text-2xl font-black text-white mt-1 font-mono">{organizerRevenues.toLocaleString('fr-FR')} FCFA</p>
-          <span className="text-[10px] text-slate-500 block mt-1">Brut: {rawRevenues.toLocaleString('fr-FR')} FCFA (-7% HubEvent)</span>
+          <span className="text-[10px] text-slate-500 block mt-1">Brut: {rawRevenues.toLocaleString('fr-FR')} FCFA (-10% HubEvent)</span>
         </div>
 
       </div>

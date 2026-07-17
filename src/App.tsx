@@ -241,7 +241,7 @@ function AppLayout() {
             HubEvent — L'infrastructure numerique qui digitalise les concours, revele les talents et connecte les evenements d'Afrique.
           </p>
           <p className="max-w-2xl mx-auto leading-relaxed text-slate-500 dark:text-slate-400">
-            Paiements chiffres SSL et integration certifiee SebPay (Orange Money, MTN, Moov, Wave, Airtel, M-Pesa, 14 operateurs). Commission standard de 7% sur les votes payants servant a l'hebergement et au maintien de la securite.
+            Paiements chiffres SSL et integration certifiee SebPay (Orange Money, MTN, Moov, Wave, Airtel, M-Pesa, 14 operateurs). Commission standard de 10% sur les votes payants servant a l'hebergement et au maintien de la securite.
           </p>
           <div className="flex items-center justify-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-800 max-w-md mx-auto text-slate-400 dark:text-slate-500">
             <span>Cotonou, Benin</span>

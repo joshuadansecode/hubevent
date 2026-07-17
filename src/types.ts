@@ -75,7 +75,7 @@ export interface Transaction {
   paymentMethod: 'Mobile Money' | 'SebPay' | 'Carte Bancaire';
   status: 'Succès' | 'En attente' | 'Échoué';
   timestamp: string;
-  commissionCFA: number; // 7%
+  commissionCFA: number; // 10%
   organizerShareCFA: number; // 93%
 }
 

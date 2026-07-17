@@ -1221,7 +1221,7 @@ export default function PublicPortal({
                   {/* Security trace notification */}
                   <div className="flex items-start gap-2 text-[10px] text-slate-400">
                     <ShieldCheck className="text-emerald-500 shrink-0 mt-0.5" size={13} />
-                    <span>Votre transaction est certifiée. 7% de commission applicables au maintien de la plateforme technique HubEvent.</span>
+                    <span>Votre transaction est certifiée. 10% de commission applicables au maintien de la plateforme technique HubEvent.</span>
                   </div>
 
                   {/* Checkout CTA */}

@@ -12,7 +12,7 @@ export default function GainSimulator({ basePrice, compact }: GainSimulatorProps
   const [pricePerVote, setPricePerVote] = useState(basePrice);
 
   const brut = estimatedVoters * pricePerVote;
-  const commission = Math.round(brut * 0.07);
+  const commission = Math.round(brut * 0.1);
   const net = brut - commission;
 
   return (
@@ -78,7 +78,7 @@ export default function GainSimulator({ basePrice, compact }: GainSimulatorProps
             animate={{ scale: 1 }}
             className="bg-[#12141c] border border-gray-800 rounded-lg p-3 text-center"
           >
-            <p className="text-[10px] text-amber-500 uppercase font-mono tracking-wider">Commission 7%</p>
+            <p className="text-[10px] text-amber-500 uppercase font-mono tracking-wider">Commission 10%</p>
             <p className="text-sm font-black text-amber-400 font-mono mt-0.5">{commission.toLocaleString('fr-FR')} F</p>
           </motion.div>
           <motion.div

@@ -3,7 +3,7 @@ import { NotFoundError, AppError } from '../utils/errors';
 import { OtpService } from './otp.service';
 import { FedaPayService } from './fedapay.service';
 
-const COMMISSION_RATE = 0.07;
+const COMMISSION_RATE = 0.1;
 const otpService = new OtpService();
 const fedapayService = new FedaPayService();
 

@@ -507,7 +507,7 @@ export class LocalDB {
     }
 
     // Calcul de la commission de 7%
-    const commissionCFA = Math.round(amountCFA * 0.07);
+    const commissionCFA = Math.round(amountCFA * 0.1);
     const organizerShareCFA = amountCFA - commissionCFA;
 
     const newTx: Transaction = {

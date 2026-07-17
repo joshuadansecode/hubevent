@@ -10,7 +10,7 @@ const features = [
   { icon: ShieldCheck, title: 'Securite Renforcee', desc: 'Double verification par SMS OTP anti-fraude' },
   { icon: TrendingUp, title: 'Resultats Temps Reel', desc: 'Classement et votes mis a jour instantanement' },
   { icon: Zap, title: 'Vote Instantane', desc: 'Soutenez votre candidat en moins de 2 minutes' },
-  { icon: Award, title: 'Commission 7%', desc: 'Tarif le plus competitif du marche africain' },
+  { icon: Award, title: 'Commission 10%', desc: 'Tarif le plus competitif du marche africain' },
   { icon: BarChart3, title: 'Tableau de Bord', desc: 'Statistiques detaillees pour les organisateurs' },
 ];
 

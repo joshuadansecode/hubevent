@@ -476,7 +476,7 @@ export class SupabaseAdapter implements BackendAdapter {
   }
 
   async initiateTransaction(data: InitiateTransactionData) {
-    const commissionCFA = Math.round(data.amountCFA * 0.07);
+    const commissionCFA = Math.round(data.amountCFA * 0.1);
     const organizerShareCFA = data.amountCFA - commissionCFA;
 
     const { data: row, error } = await supabase.from('transactions').insert({

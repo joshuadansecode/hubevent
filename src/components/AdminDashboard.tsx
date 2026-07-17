@@ -346,7 +346,7 @@ export default function AdminDashboard({ events, transactions, categories, candi
             <PieChart size={24} />
           </div>
           <div>
-            <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Commission HubEvent (7%)</p>
+            <p className="text-xs text-slate-400 font-medium uppercase tracking-wider">Commission HubEvent (10%)</p>
             <p className="text-xl font-black text-orange-400 mt-1">{totalCommission.toLocaleString('fr-FR')} FCFA</p>
             <div className="flex items-center gap-1 text-[10px] text-orange-300 mt-1">
               <span>Ressources propres de la plateforme</span>
@@ -528,7 +528,7 @@ export default function AdminDashboard({ events, transactions, categories, candi
                 <th className="p-4 font-bold">Événement & Candidat</th>
                 <th className="p-4 font-bold">Votant (Tél)</th>
                 <th className="p-4 font-bold">Montant & Mode</th>
-                <th className="p-4 font-bold">Com. HubEvent (7%)</th>
+                <th className="p-4 font-bold">Com. HubEvent (10%)</th>
                 <th className="p-4 font-bold">Date & Statut</th>
               </tr>
             </thead>
